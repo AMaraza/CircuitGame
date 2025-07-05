@@ -8,6 +8,7 @@ class GRID:
         self.rows = int((screen.get_height() - (self.cell_size * 2)) / self.cell_size)
         self.grid = []
         self.screen = screen
+        self.can_place = True
 
         #Populate Grid List
         for i in range(self.rows):
@@ -28,3 +29,7 @@ class GRID:
                 if self.grid[i][j] == 1:
                     rect = pygame.Rect(x, y, self.cell_size, self.cell_size)
                     pygame.draw.rect(self.screen, "red", rect)
+
+                if self.grid[i][j] == 2:
+                    rect = pygame.Rect(x, y, self.cell_size, self.cell_size)
+                    pygame.draw.rect(self.screen, "green", rect)

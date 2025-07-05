@@ -9,10 +9,16 @@ class MACHINE:
         self.top_left_grid_col = (grid.columns // 2) - 1
 
         #Functional Variables
-        self.max_power = 100
+        self.max_power = 20
         self.current_power = self.max_power
-        self.power_draw = 0.5
+        self.power_draw = 2
         self.power_tick = 0
+
+        self.money = 100
+        self.battery_cost = 20
+        self.battery_production = 1
+
+        self.trace_cost = 5
 
     def draw_machine(self):
         for i in range(self.grid.rows):
