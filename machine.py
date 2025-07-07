@@ -17,6 +17,8 @@ class MACHINE:
         self.money = 100
         self.battery_cost = 20
         self.battery_production = 1
+        self.battery_production_upgrade = 5
+        self.battery_upgrade = 50
 
         self.trace_cost = 5
 

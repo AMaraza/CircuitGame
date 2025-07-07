@@ -33,3 +33,16 @@ class GRID:
                 if self.grid[i][j] == 2:
                     rect = pygame.Rect(x, y, self.cell_size, self.cell_size)
                     pygame.draw.rect(self.screen, "green", rect)
+
+                if self.grid[i][j] == 3:
+                    rect = pygame.Rect(x, y, self.cell_size, self.cell_size)
+                    pygame.draw.rect(self.screen, "yellow", rect)
+
+                if self.grid[i][j] == 4:
+                    rect = pygame.Rect(x, y, self.cell_size, self.cell_size)
+                    pygame.draw.rect(self.screen, "orange", rect)
+
+                if self.grid[i][j] == 0:
+                    rect = pygame.Rect(x, y, self.cell_size, self.cell_size)
+                    pygame.draw.rect(self.screen, "black", rect)
+                    pygame.draw.rect(self.screen, "gray", rect, 1)
