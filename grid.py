@@ -1,48 +1,86 @@
 import pygame
+from collections import deque
+
+# Constants for grid tile types
+EMPTY = 0
+MACHINE = 1
+BATTERY = 2
+TRACE = 3
+UPGRADED_BATTERY = 4
 
 class GRID:
     def __init__(self, screen):
-        #Define Grid Traits
-        self.cell_size = 40
-        self.columns = int(screen.get_width() / self.cell_size)
-        self.rows = int((screen.get_height() - (self.cell_size * 2)) / self.cell_size)
-        self.grid = []
         self.screen = screen
-        self.can_place = True
+        self.cell_size = 40
+        self.columns = screen.get_width() // self.cell_size
+        self.rows = (screen.get_height() - self.cell_size * 2) // self.cell_size
 
-        #Populate Grid List
-        for i in range(self.rows):
-            row = []
-            for j in range(self.columns):
-                row.append(0)
-            self.grid.append(row)
+        # 2D grid initialized with EMPTY tiles
+        self.grid = [[EMPTY for _ in range(self.columns)] for _ in range(self.rows)]
+
+    def is_connected_to_machine(self, start_row, start_col):
+        visited = set()
+        queue = deque([(start_row, start_col)])
+
+        while queue:
+            row, col = queue.popleft()
+            if (row, col) in visited:
+                continue
+            visited.add((row, col))
+
+            tile = self.grid[row][col]
+            if tile == MACHINE:
+                return True
+            if tile not in (BATTERY, TRACE, UPGRADED_BATTERY):
+                continue
+
+            for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                nr, nc = row + dr, col + dc
+                if 0 <= nr < self.rows and 0 <= nc < self.columns:
+                    queue.append((nr, nc))
+
+        return False
+
+    def get_connected_battery_type(self, start_row, start_col):
+        visited = set()
+        queue = deque([(start_row, start_col)])
+
+        while queue:
+            row, col = queue.popleft()
+            if (row, col) in visited:
+                continue
+            visited.add((row, col))
+
+            tile = self.grid[row][col]
+            if tile == BATTERY:
+                return "battery"
+            elif tile == UPGRADED_BATTERY:
+                return "upgraded"
+            elif tile not in (TRACE, MACHINE):
+                continue
+
+            for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                nr, nc = row + dr, col + dc
+                if 0 <= nr < self.rows and 0 <= nc < self.columns:
+                    queue.append((nr, nc))
+
+        return "none"
 
     def draw_grid(self):
-        #Draw grid with borderlines
-        for i in range(self.rows):
-            for j in range(self.columns):
-                x = j * self.cell_size
-                y = i * self.cell_size
+        for row in range(self.rows):
+            for col in range(self.columns):
+                x = col * self.cell_size
+                y = row * self.cell_size
                 rect = pygame.Rect(x, y, self.cell_size, self.cell_size)
-                pygame.draw.rect(self.screen, "gray", rect, 1)
 
-                if self.grid[i][j] == 1:
-                    rect = pygame.Rect(x, y, self.cell_size, self.cell_size)
-                    pygame.draw.rect(self.screen, "red", rect)
+                tile = self.grid[row][col]
+                color = {
+                    EMPTY: "black",
+                    MACHINE: "red",
+                    BATTERY: "green",
+                    TRACE: "yellow",
+                    UPGRADED_BATTERY: "orange"
+                }.get(tile, "white")
 
-                if self.grid[i][j] == 2:
-                    rect = pygame.Rect(x, y, self.cell_size, self.cell_size)
-                    pygame.draw.rect(self.screen, "green", rect)
-
-                if self.grid[i][j] == 3:
-                    rect = pygame.Rect(x, y, self.cell_size, self.cell_size)
-                    pygame.draw.rect(self.screen, "yellow", rect)
-
-                if self.grid[i][j] == 4:
-                    rect = pygame.Rect(x, y, self.cell_size, self.cell_size)
-                    pygame.draw.rect(self.screen, "orange", rect)
-
-                if self.grid[i][j] == 0:
-                    rect = pygame.Rect(x, y, self.cell_size, self.cell_size)
-                    pygame.draw.rect(self.screen, "black", rect)
-                    pygame.draw.rect(self.screen, "gray", rect, 1)
+                pygame.draw.rect(self.screen, color, rect)
+                pygame.draw.rect(self.screen, "gray", rect, 1)  # grid border

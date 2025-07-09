@@ -1,73 +1,142 @@
-import pygame, grid, machine
+import pygame
+import grid, machine
+from tiletypes import EMPTY, MACHINE, BATTERY, TRACE, UPGRADED_BATTERY
 
-#Basic Pygame Initialization (Screen Size, Clock, Loop, Delta Time)
+# Pygame setup
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
-running = True
 dt = 0
+running = True
 
-#0 = battery, 1 = trace, 2 = upgrade, 3 = delete
-mode = 0
+# Modes
+MODE_BATTERY = 0
+MODE_TRACE = 1
+MODE_UPGRADE = 2
+MODE_DELETE = 3
+mode = MODE_BATTERY
 
+# Game setup
 game_grid = grid.GRID(screen)
 machine = machine.MACHINE(screen, game_grid)
-
 font = pygame.font.Font('main_font.ttf', 20)
+smaller_font = pygame.font.Font('main_font.ttf', 13)
 
-#Main Loop
+def get_mouse_tile():
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    col = int(mouse_x / game_grid.cell_size)
+    row = int(mouse_y / game_grid.cell_size)
+    return row, col
+
+def place_battery(row, col):
+    if game_grid.grid[row][col] != EMPTY:
+        return
+    if machine.money < machine.battery_cost:
+        return
+    machine.money -= machine.battery_cost
+    game_grid.grid[row][col] = BATTERY
+
+def place_trace(row, col):
+    if game_grid.grid[row][col] != EMPTY:
+        return
+    if machine.money < machine.trace_cost:
+        return
+    machine.money -= machine.trace_cost
+    game_grid.grid[row][col] = TRACE
+    machine.recalculate_power_draw()
+
+
+def upgrade_battery(row, col):
+    if game_grid.grid[row][col] != BATTERY:
+        return
+    if machine.money < machine.battery_upgrade:
+        return
+    machine.money -= machine.battery_upgrade
+    game_grid.grid[row][col] = UPGRADED_BATTERY
+    machine.recalculate_power_draw()
+
+def delete_tile(row, col):
+    tile = game_grid.grid[row][col]
+    if tile == EMPTY or tile == MACHINE:
+        return
+
+    if tile == BATTERY:
+        machine.money += machine.battery_cost // 2
+    elif tile == TRACE:
+        machine.money += machine.trace_cost // 2
+    elif tile == UPGRADED_BATTERY:
+        machine.money += machine.battery_upgrade // 2
+
+    game_grid.grid[row][col] = EMPTY
+    machine.recalculate_power_draw()
+
+# Main game loop
 while running:
+    mouse_x, mouse_y = pygame.mouse.get_pos()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_TAB:
-                if mode != 3:
-                    mode += 1
-                else:
-                    mode = 0
+        elif event.type == pygame.KEYUP and event.key == pygame.K_TAB:
+            mode = (mode + 1) % 4
+        #REMOVE BEFORE FINISHING PROJECT - FOR TESTING PURPOSES ONLY
+        elif event.type == pygame.KEYUP and event.key == pygame.K_ESCAPE:
+            running = False
 
+    # Mouse click handling
+    if pygame.mouse.get_pressed()[0]:
+        row, col = get_mouse_tile()
+        if 0 <= row < game_grid.rows and 0 <= col < game_grid.columns:
+            if mode == MODE_BATTERY:
+                place_battery(row, col)
+            elif mode == MODE_TRACE:
+                place_trace(row, col)
+            elif mode == MODE_UPGRADE:
+                upgrade_battery(row, col)
+            elif mode == MODE_DELETE:
+                delete_tile(row, col)
 
-    money_text = font.render(f"${machine.money:03d}", True, "green")
-    money_text_rect = money_text.get_rect()
-    money_text_rect.center = (100, screen.get_height() - 40)
-
-    power_draw_text = font.render(f"Power Draw: {machine.power_draw} watt/sec  |  Current Power: {int(machine.current_power)}", True, "Red")
-    power_draw_text_rect = money_text.get_rect()
-    power_draw_text_rect.center = (400, screen.get_height() - 40)
-
-    mouse_click = pygame.mouse.get_pressed()
-    if mouse_click[0] == 1:
-        mouse_pos = pygame.mouse.get_pos()
-        if mouse_pos[0] / game_grid.cell_size <= game_grid.columns and mouse_pos[1] / game_grid.cell_size <= game_grid.rows:
-            if machine.money >= machine.battery_cost and machine.power_draw >= machine.battery_production and mode == 0 and game_grid.grid[int(mouse_pos[1] / game_grid.cell_size)][int(mouse_pos[0] / game_grid.cell_size)] != 2:
-                machine.money -= machine.battery_cost
-                machine.power_draw -= machine.battery_production
-                game_grid.grid[int(mouse_pos[1] / game_grid.cell_size)][int(mouse_pos[0] / game_grid.cell_size)] = 2
-            if mode == 1 and game_grid.grid[int(mouse_pos[1] / game_grid.cell_size)][int(mouse_pos[0] / game_grid.cell_size)] != 3 and game_grid.grid[int(mouse_pos[1] / game_grid.cell_size)][int(mouse_pos[0] / game_grid.cell_size)] != 2:
-                if machine.money - machine.trace_cost >= 0:
-                    machine.money -= machine.trace_cost
-                    game_grid.grid[int(mouse_pos[1] / game_grid.cell_size)][int(mouse_pos[0] / game_grid.cell_size)] = 3
-            if mode == 2 and game_grid.grid[int(mouse_pos[1] / game_grid.cell_size)][int(mouse_pos[0] / game_grid.cell_size)] == 2 and game_grid.grid[int(mouse_pos[1] / game_grid.cell_size)][int(mouse_pos[0] / game_grid.cell_size)] != 4:
-                machine.money -= machine.battery_upgrade
-                machine.power_draw -= machine.battery_production_upgrade
-                game_grid.grid[int(mouse_pos[1] / game_grid.cell_size)][int(mouse_pos[0] / game_grid.cell_size)] = 4
-            if mode == 3 and game_grid.grid[int(mouse_pos[1] / game_grid.cell_size)][int(mouse_pos[0] / game_grid.cell_size)] != 0 and game_grid.grid[int(mouse_pos[1] / game_grid.cell_size)][int(mouse_pos[0] / game_grid.cell_size)] != 1:
-                if game_grid.grid[int(mouse_pos[1] / game_grid.cell_size)][int(mouse_pos[0] / game_grid.cell_size)] == 2:
-                    machine.money += int(machine.battery_cost / 2)
-                elif game_grid.grid[int(mouse_pos[1] / game_grid.cell_size)][int(mouse_pos[0] / game_grid.cell_size)] == 3:
-                    machine.money += int(machine.trace_cost / 2)
-                elif game_grid.grid[int(mouse_pos[1] / game_grid.cell_size)][
-                    int(mouse_pos[0] / game_grid.cell_size)] == 4:
-                    machine.money += int(machine.battery_upgrade / 2)
-                game_grid.grid[int(mouse_pos[1] / game_grid.cell_size)][int(mouse_pos[0] / game_grid.cell_size)] = 0
-
+    # Draw UI and game state
     screen.fill("black")
     game_grid.draw_grid()
     machine.draw_machine()
-    machine.update_machine(dt, )
-    screen.blit(money_text, money_text_rect)
-    screen.blit(power_draw_text, power_draw_text_rect)
+    machine.update_machine(dt)
+
+    money_text = font.render(f"${machine.money:03d}", True, "green")
+    money_rect = money_text.get_rect(center=(100, screen.get_height() - 40))
+    screen.blit(money_text, money_rect)
+
+    power_text = font.render(f"Power Loss: {machine.power_draw} Watts  |  Current Power: {int(machine.current_power)}", True, "red")
+    power_rect = power_text.get_rect(center=(screen.get_width() // 2, screen.get_height() - 40))
+    screen.blit(power_text, power_rect)
+
+
+    if mode == MODE_BATTERY:
+        mode_text = smaller_font.render(f"Mode: Battery", True, "green", "black")
+        mode_rect = mode_text.get_rect(center=(mouse_x, mouse_y + 40))
+        money_text = smaller_font.render(f"-${machine.battery_cost}", True, "red", "black")
+        money_rect = mode_text.get_rect(center=(mouse_x + money_text.get_width(), mouse_y + 60))
+        screen.blit(mode_text, mode_rect)
+        screen.blit(money_text, money_rect)
+    elif mode == MODE_TRACE:
+        mode_text = smaller_font.render(f"Mode: Trace", True, "green", "black")
+        mode_rect = mode_text.get_rect(center=(mouse_x, mouse_y + 40))
+        money_text = smaller_font.render(f"-${machine.trace_cost}", True, "red", "black")
+        money_rect = mode_text.get_rect(center=(mouse_x + money_text.get_width(), mouse_y + 60))
+        screen.blit(mode_text, mode_rect)
+        screen.blit(money_text, money_rect)
+    elif mode == MODE_UPGRADE:
+        mode_text = smaller_font.render(f"Mode: Upgrade", True, "green", "black")
+        mode_rect = mode_text.get_rect(center=(mouse_x, mouse_y + 40))
+        money_text = smaller_font.render(f"-${machine.battery_upgrade}", True, "red", "black")
+        money_rect = mode_text.get_rect(center=(mouse_x + money_text.get_width(), mouse_y + 60))
+        screen.blit(mode_text, mode_rect)
+        screen.blit(money_text, money_rect)
+    elif mode == MODE_DELETE:
+        mode_text = smaller_font.render(f"Mode: Delete", True, "green", "black")
+        mode_rect = mode_text.get_rect(center=(mouse_x, mouse_y + 40))
+        screen.blit(mode_text, mode_rect)
+
+
     pygame.display.update()
     dt = clock.tick(60) / 1000
 
