@@ -16,6 +16,11 @@ connect_sound = pygame.mixer.Sound("sounds/connected.wav")
 disconnect_sound = pygame.mixer.Sound("sounds/disconnect.wav")
 error_sound = pygame.mixer.Sound("sounds/error.wav")
 error_sound.set_volume(0.2)
+low_power_sound = pygame.mixer.Sound("sounds/lowpowersound.wav")
+low_power_sound.set_volume(0.2)
+game_over_sound = pygame.mixer.Sound("sounds/gameoversound.wav")
+game_over_sound.set_volume(0.5)
+machine_place_sound = pygame.mixer.Sound("sounds/newmachine.wav")
 pygame.mixer.music.load("sounds/menu.wav")
 pygame.mixer.music.set_volume(0.7)
 
@@ -50,6 +55,16 @@ async def main():
     highlight_speed = 150  # pixels per second
     panel_width = game_grid.cell_size * 3
     panel_height = game_grid.cell_size * game_grid.rows
+
+    flash_red = False
+    flash_start_time = 0
+    flash_duration = 1000
+    low_power_triggered = False
+
+    game_over_played = False
+
+
+    game_time = 0
 
     def place_battery(row, col):
         if game_grid.grid[row][col] != EMPTY:
@@ -143,7 +158,10 @@ async def main():
                     if game_menu.play_button_rect.collidepoint(event.pos):
                         game_state = 3
             pygame.display.update()
+
+
         elif game_state == 3:
+            game_time += 1 * dt
             if machine.current_power == 0:
                 game_state = 4
             mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -182,7 +200,23 @@ async def main():
             screen.fill("black")
             game_grid.draw_grid()
             machine.draw_machine()
-            machine.update_machine(dt)
+            machine.update_machine(dt, machine_place_sound)
+
+            current_time = pygame.time.get_ticks()
+
+            if machine.current_power <= 10:
+                if not low_power_triggered:
+                    flash_red = True
+                    flash_start_time = current_time
+                    low_power_triggered = True
+                    low_power_sound.play()
+            elif machine.current_power > 10:
+                low_power_triggered = False
+                flash_red = False  # Reset if power goes back up
+
+            # Turn off flashing after duration
+            if flash_red and current_time - flash_start_time >= flash_duration:
+                flash_red = False
 
             hover_row, hover_col = get_mouse_tile()
             if (
@@ -201,11 +235,11 @@ async def main():
                 )
                 pygame.draw.rect(screen, color, hover_rect, 2)
 
-            money_text = font.render(f"${machine.money:03d}", True, "green")
+            money_text = font.render(f"${machine.money:.2f}", True, "green")
             money_rect = money_text.get_rect(center=(100, screen.get_height() - 40))
             screen.blit(money_text, money_rect)
 
-            power_text = font.render(f"Power Loss: {machine.power_draw} Watts  |  Current Power: {int(machine.current_power)}", True, "red")
+            power_text = font.render(f"Power Loss: {machine.power_draw:.1f} Watts  |  Current Power: {int(machine.current_power)}", True, "red")
             power_rect = power_text.get_rect(center=(screen.get_width() // 2, screen.get_height() - 40))
             screen.blit(power_text, power_rect)
 
@@ -213,7 +247,6 @@ async def main():
             switch_rect = switch_text.get_rect(center=(screen.get_width() - 150, screen.get_height() - 42))
             screen.blit(switch_text, switch_rect)
 
-            # Mode text UI
             if mode == 0:
                 mode_text = smaller_font.render(f"Mode: Battery", True, "green", "black")
                 mode_rect = mode_text.get_rect(center=(mouse_x, mouse_y + 40))
@@ -240,13 +273,26 @@ async def main():
                 mode_rect = mode_text.get_rect(center=(mouse_x, mouse_y + 40))
                 screen.blit(mode_text, mode_rect)
 
+            if flash_red:
+                overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+                overlay.fill((255, 0, 0, 100))  # semi-transparent red
+                screen.blit(overlay, (0, 0))
+
             pygame.display.update()
 
         elif game_state == 4:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+
+            if not game_over_played:
+                pygame.mixer.music.stop()
+                game_over_sound.play()
+                game_over_played = True
+
             screen.fill("Black")
+            game_grid.draw_grid()
+            game_menu.draw_game_over(game_time)
             pygame.display.update()
 
         dt = clock.tick(60) / 1000

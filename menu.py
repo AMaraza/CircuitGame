@@ -17,6 +17,10 @@ class MENU:
         self.play_text_rect = self.play_text.get_rect()
         self.play_text_rect.center = self.play_button_rect.center
 
+        self.game_over_text = self.font.render("Game Over", True, "White", "Black")
+        self.game_over_text_rect = self.game_over_text.get_rect()
+        self.game_over_text_rect.center = self.screen.get_width() / 2, 200
+
     def draw_menu(self):
         mouse_pos = pygame.mouse.get_pos()
 
@@ -28,3 +32,15 @@ class MENU:
         pygame.draw.rect(self.screen, button_color, self.play_button_rect, 0, 5)
         self.screen.blit(self.play_text, self.play_text_rect)
         self.screen.blit(self.title, self.title_rect)
+
+    def draw_game_over(self, game_time):
+        self.screen.blit(self.game_over_text, self.game_over_text_rect)
+
+        minutes = int(game_time) // 60
+        secs = int(game_time) % 60
+
+        self.game_time_text = self.font.render(f"You survived for: {minutes:02}:{secs:02}", True, "White", "Black")
+        self.game_time_text_rect = self.game_time_text.get_rect()
+        self.game_time_text_rect.center = self.screen.get_width() / 2, self.screen.get_height() / 2
+        self.screen.blit(self.game_time_text, self.game_time_text_rect)
+

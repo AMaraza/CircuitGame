@@ -26,25 +26,25 @@ class MachineCore:
         self.machine_positions += [(r, c), (r+1, c), (r, c+1), (r+1, c+1)]
 
         # Power management
-        self.max_power = 30
+        self.max_power = 100
         self.current_power = self.max_power
         self.base_power_draw = 2
         self.power_draw = self.base_power_draw
 
         # Economy
-        self.money = 100
-        self.battery_cost = 20
+        self.money = 45
+        self.battery_cost = 15
         self.battery_production = 1
-        self.battery_production_upgrade = 6
-        self.battery_upgrade = 50
+        self.battery_production_upgrade = 2.5
+        self.battery_upgrade = 45
         self.trace_cost = 5
 
         self.time_since_power_increase = 0.0
         self.time_since_last_income = 0.0
         self.time_since_machine_spawn = 0.0
 
-        self.machine_spawn_power_bonus = 10
-        self.machine_spawn_power_draw_penalty = 1
+        self.machine_spawn_power_bonus = 30
+        self.machine_spawn_power_draw_penalty = 3
 
     from tiletypes import TRACE  # if not already imported
 
@@ -113,7 +113,7 @@ class MachineCore:
 
         return spawn_row, spawn_col
 
-    def update_machine(self, dt):
+    def update_machine(self, dt, spawn_sound):
         if self.current_power > 0:
             self.current_power -= self.power_draw * dt
         else:
@@ -123,19 +123,30 @@ class MachineCore:
         self.time_since_last_income += dt
         self.time_since_machine_spawn += dt
 
-        if self.time_since_power_increase >= 15:
+        if self.time_since_power_increase >= 25:
             self.time_since_power_increase = 0.0
             self.base_power_draw += 1
             self.recalculate_power_draw()
 
         if self.time_since_last_income >= 1.0:
             self.time_since_last_income = 0.0
-            if self.current_power > 0:
-                efficiency = max(0, self.base_power_draw - self.power_draw)
-                self.money += int(efficiency * 1.5)
 
-        if self.time_since_machine_spawn >= 25:
+            if self.power_draw > 0:
+                income = 0
+                upgraded_tiles = 0
+
+                for row in range(self.grid.rows):
+                    for col in range(self.grid.columns):
+                        tile = self.grid.grid[row][col]
+                        if self.grid.is_connected_to_machine(row, col, self.machine_positions):
+                            if tile == BATTERY:
+                                income += 1
+
+                self.money += income
+
+        if self.time_since_machine_spawn >= 30:
             self.time_since_machine_spawn = 0
+            spawn_sound.play()
 
             spawn_row, spawn_col = self.find_spawn_position()
             self.grid.grid[spawn_row][spawn_col] = MACHINE
