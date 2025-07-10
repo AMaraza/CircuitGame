@@ -18,28 +18,31 @@ class GRID:
         # 2D grid initialized with EMPTY tiles
         self.grid = [[EMPTY for _ in range(self.columns)] for _ in range(self.rows)]
 
-    def is_connected_to_machine(self, start_row, start_col):
+    def is_connected_to_machine(self, row, col, machine_positions):
         visited = set()
-        queue = deque([(start_row, start_col)])
+        stack = [(row, col)]
 
-        while queue:
-            row, col = queue.popleft()
-            if (row, col) in visited:
+        while stack:
+            r, c = stack.pop()
+            if (r, c) in visited:
                 continue
-            visited.add((row, col))
+            visited.add((r, c))
 
-            tile = self.grid[row][col]
-            if tile == MACHINE:
+            if (r, c) in machine_positions:
                 return True
-            if tile not in (BATTERY, TRACE, UPGRADED_BATTERY):
-                continue
 
-            for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-                nr, nc = row + dr, col + dc
-                if 0 <= nr < self.rows and 0 <= nc < self.columns:
-                    queue.append((nr, nc))
-
+            for nr, nc in self.get_adjacent_cells(r, c):
+                if self.grid[nr][nc] in [BATTERY, TRACE, UPGRADED_BATTERY, MACHINE] and (nr, nc) not in visited:
+                    stack.append((nr, nc))
         return False
+
+    def get_adjacent_cells(self, row, col):
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        return [
+            (row + dr, col + dc)
+            for dr, dc in directions
+            if 0 <= row + dr < self.rows and 0 <= col + dc < self.columns
+        ]
 
     def get_connected_battery_type(self, start_row, start_col):
         visited = set()
@@ -79,8 +82,9 @@ class GRID:
                     MACHINE: "red",
                     BATTERY: "green",
                     TRACE: "yellow",
-                    UPGRADED_BATTERY: "orange"
+                    UPGRADED_BATTERY: "orange",
                 }.get(tile, "white")
+
 
                 pygame.draw.rect(self.screen, color, rect)
                 pygame.draw.rect(self.screen, "gray", rect, 1)  # grid border
