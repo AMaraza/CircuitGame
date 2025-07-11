@@ -88,3 +88,8 @@ class GRID:
 
                 pygame.draw.rect(self.screen, color, rect)
                 pygame.draw.rect(self.screen, "gray", rect, 1)  # grid border
+
+    def reset(self):
+        for row in range(self.rows):
+            for col in range(self.columns):
+                self.grid[row][col] = EMPTY

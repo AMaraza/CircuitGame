@@ -8,21 +8,21 @@ screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 pygame.display.set_caption("Livewire")
 
-place_battery_sound = pygame.mixer.Sound("sounds/placebattery.wav")
-place_trace_sound = pygame.mixer.Sound("sounds/placetrace.wav")
-upgrade_sound = pygame.mixer.Sound("sounds/upgrade.wav")
-delete_sound = pygame.mixer.Sound("sounds/delete.wav")
+place_battery_sound = pygame.mixer.Sound("sounds/placebattery.ogg")
+place_trace_sound = pygame.mixer.Sound("sounds/placetrace.ogg")
+upgrade_sound = pygame.mixer.Sound("sounds/upgrade.ogg")
+delete_sound = pygame.mixer.Sound("sounds/delete.ogg")
 delete_sound.set_volume(1.5)
-connect_sound = pygame.mixer.Sound("sounds/connected.wav")
-disconnect_sound = pygame.mixer.Sound("sounds/disconnect.wav")
-error_sound = pygame.mixer.Sound("sounds/error.wav")
+connect_sound = pygame.mixer.Sound("sounds/connected.ogg")
+disconnect_sound = pygame.mixer.Sound("sounds/disconnect.ogg")
+error_sound = pygame.mixer.Sound("sounds/error.ogg")
 error_sound.set_volume(0.2)
-low_power_sound = pygame.mixer.Sound("sounds/lowpowersound.wav")
+low_power_sound = pygame.mixer.Sound("sounds/lowpowersound.ogg")
 low_power_sound.set_volume(0.2)
-game_over_sound = pygame.mixer.Sound("sounds/gameoversound.wav")
+game_over_sound = pygame.mixer.Sound("sounds/gameoversound.ogg")
 game_over_sound.set_volume(0.5)
-machine_place_sound = pygame.mixer.Sound("sounds/newmachine.wav")
-pygame.mixer.music.load("sounds/menu.wav")
+machine_place_sound = pygame.mixer.Sound("sounds/newmachine.ogg")
+pygame.mixer.music.load("sounds/menu.ogg")
 pygame.mixer.music.set_volume(0.7)
 
 game_grid = grid.GRID(screen)
@@ -125,10 +125,10 @@ async def main():
         if game_state != prev_game_state:
             # Only run this block once per state change
             if game_state == 0:
-                pygame.mixer.music.load("sounds/menu.wav")
+                pygame.mixer.music.load("sounds/menu.ogg")
                 pygame.mixer.music.play(-1)
             elif game_state == 3:
-                pygame.mixer.music.load("sounds/game.wav")
+                pygame.mixer.music.load("sounds/game.ogg")
                 pygame.mixer.music.play(-1)
 
             prev_game_state = game_state  # Update the tracker

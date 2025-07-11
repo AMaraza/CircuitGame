@@ -5,9 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b687f8f3-3e50-432d-8a16-82bce8a642c2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/jamegam.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web-cache/19cba7c472c00dc4b6be4f7314a04410.head" beforeDir="false" afterPath="$PROJECT_DIR$/build/web-cache/19cba7c472c00dc4b6be4f7314a04410.head" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web-cache/1b15e19d796839ac93068711d32c2557.head" beforeDir="false" afterPath="$PROJECT_DIR$/build/web-cache/1b15e19d796839ac93068711d32c2557.head" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web-cache/427729db96c74210a6daf50f46f68e14.head" beforeDir="false" afterPath="$PROJECT_DIR$/build/web-cache/427729db96c74210a6daf50f46f68e14.head" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web-cache/43a138bdf7507cad77eb1201a9b99081.head" beforeDir="false" afterPath="$PROJECT_DIR$/build/web-cache/43a138bdf7507cad77eb1201a9b99081.head" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web-cache/7ba5f9b81eefd22864d4f269f6440302.head" beforeDir="false" afterPath="$PROJECT_DIR$/build/web-cache/7ba5f9b81eefd22864d4f269f6440302.head" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web-cache/8e0c8197f178117b91e8dc55d7eee0db.head" beforeDir="false" afterPath="$PROJECT_DIR$/build/web-cache/8e0c8197f178117b91e8dc55d7eee0db.head" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web-cache/8e7732e36d74b6ca66d825cd22d53b85.head" beforeDir="false" afterPath="$PROJECT_DIR$/build/web-cache/8e7732e36d74b6ca66d825cd22d53b85.head" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web-cache/a954d0fa88d49b578037b7e007cf3dc2.head" beforeDir="false" afterPath="$PROJECT_DIR$/build/web-cache/a954d0fa88d49b578037b7e007cf3dc2.head" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web-cache/b0023fe2aacd2375a846b7629ddaab1c.head" beforeDir="false" afterPath="$PROJECT_DIR$/build/web-cache/b0023fe2aacd2375a846b7629ddaab1c.head" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web-cache/da83f20a925311df5be3721e12eb180b.head" beforeDir="false" afterPath="$PROJECT_DIR$/build/web-cache/da83f20a925311df5be3721e12eb180b.head" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web-cache/e81b92874f189a8c7136315a0e88ab5a.head" beforeDir="false" afterPath="$PROJECT_DIR$/build/web-cache/e81b92874f189a8c7136315a0e88ab5a.head" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web-cache/ee25ea4dcef639025200b5bea19f91dd.head" beforeDir="false" afterPath="$PROJECT_DIR$/build/web-cache/ee25ea4dcef639025200b5bea19f91dd.head" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web-cache/ffe5224cce19ab35b45c00567061a73a.head" beforeDir="false" afterPath="$PROJECT_DIR$/build/web-cache/ffe5224cce19ab35b45c00567061a73a.head" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web.zip" beforeDir="false" afterPath="$PROJECT_DIR$/build/web.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/jamegam.apk" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/jamegam.apk" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid.py" beforeDir="false" afterPath="$PROJECT_DIR$/grid.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/machine.py" beforeDir="false" afterPath="$PROJECT_DIR$/machine.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/menu.py" afterDir="false" />
@@ -36,25 +53,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.grid.executor": "Run",
-    "Python.machine.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.menu.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.grid.executor&quot;: &quot;Run&quot;,
+    &quot;Python.machine.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.menu.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

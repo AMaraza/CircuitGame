@@ -45,6 +45,8 @@ class MachineCore:
 
         self.machine_spawn_power_bonus = 30
         self.machine_spawn_power_draw_penalty = 3
+        self.machines = 0
+        self.spawn_time = 30
 
     from tiletypes import TRACE  # if not already imported
 
@@ -144,8 +146,17 @@ class MachineCore:
 
                 self.money += income
 
-        if self.time_since_machine_spawn >= 30:
+        if self.time_since_machine_spawn >= self.spawn_time:
             self.time_since_machine_spawn = 0
+            self.machines += 1
+
+            if self.machines > 5:
+                self.machine_spawn_power_bonus = 20
+                self.machine_spawn_power_draw_penalty = 4
+            elif self.machines > 8:
+                self.machine_spawn_power_bonus = 15
+                self.machine_spawn_power_draw_penalty = 5
+                self.spawn_time = 25
             spawn_sound.play()
 
             spawn_row, spawn_col = self.find_spawn_position()
@@ -156,5 +167,30 @@ class MachineCore:
             self.base_power_draw += self.machine_spawn_power_draw_penalty
             self.recalculate_power_draw()
 
+    def reset(self):
+        self.machine_positions = []
+        self.top_left_grid_row = (self.grid.rows // 2) - 1
+        self.top_left_grid_col = (self.grid.columns // 2) - 1
+        self.machine_tiles = [
+            (self.top_left_grid_row, self.top_left_grid_col),
+            (self.top_left_grid_row, self.top_left_grid_col + 1),
+            (self.top_left_grid_row + 1, self.top_left_grid_col),
+            (self.top_left_grid_row + 1, self.top_left_grid_col + 1)
+        ]
+        self.machine_positions += list(self.machine_tiles)
 
+        self.money = 45
+        self.base_power_draw = 2
+        self.power_draw = self.base_power_draw
+        self.max_power = 100
+        self.current_power = self.max_power
+        self.previous_connections.clear()
 
+        self.time_since_power_increase = 0.0
+        self.time_since_last_income = 0.0
+        self.time_since_machine_spawn = 0.0
+
+        for row, col in self.machine_positions:
+            self.grid.grid[row][col] = MACHINE
+
+        self.recalculate_power_draw()
